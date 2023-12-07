@@ -1,0 +1,81 @@
+{
+  "package": {
+    "productName": "Tadpole VPN",
+    "version": "1.1.0"
+  },
+  "build": {
+    "distDir": "../dist",
+    "devPath": "http://localhost:3000/",
+    "beforeDevCommand": "yarn run web:dev",
+    "beforeBuildCommand": "yarn run web:build"
+  },
+  "tauri": {
+    "systemTray": {
+      "iconPath": "icons/tray-icon.ico",
+      "iconAsTemplate": true
+    },
+    "bundle": {
+      "active": true,
+      "targets": "all",
+      "identifier": "com.v2cross.tadpolevpn",
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon-new.icns",
+        "icons/icon.ico"
+      ],
+      "resources": ["resources"],
+      "externalBin": ["sidecar/clash-meta"],
+      "copyright": "© 2023 v2cross All Rights Reserved",
+      "category": "DeveloperTool",
+      "shortDescription": "Tadpole VPN",
+      "longDescription": "Tadpole VPN",
+      "deb": {
+        "depends": ["openssl"]
+      },
+      "macOS": {
+        "frameworks": [],
+        "minimumSystemVersion": "",
+        "exceptionDomain": "",
+        "signingIdentity": null,
+        "entitlements": null
+      },
+      "windows": {
+        "certificateThumbprint": null,
+        "digestAlgorithm": "sha256",
+        "timestampUrl": "",
+        "wix": {
+          "language": ["zh-CN", "en-US", "ru-RU"]
+        }
+      }
+    },
+    "updater": {
+      "active": true,
+      "endpoints": [
+        "https://bitbucket.org/api/2.0/repositories/configshareworkk/tadpoleVPN/src/main/updater/update.json",
+        "https://github.com/Pawdroid/TadpoleVPN/releases/download/updater/update.json"
+      ],
+      "dialog": false,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDM1RUZBM0MwMTBERjE2NDUKUldSRkZ0OFF3S1B2TlQxY2N1dlFkZUdsNSt3RlU4bGVoM3JqcFkzSEhXcXNyOHlseTNMLzgwL3cK"
+    },
+    "allowlist": {
+      "shell": {
+        "all": true
+      },
+      "window": {
+        "all": true
+      },
+      "process": {
+        "all": true
+      },
+      "globalShortcut": {
+        "all": true
+      }
+    },
+    "windows": [],
+    "security": {
+      "csp": "script-src 'unsafe-eval' 'self'; default-src blob: data: filesystem: ws: wss: http: https: tauri: 'unsafe-eval' 'unsafe-inline' 'self'; img-src data: 'self';"
+    }
+  }
+}
