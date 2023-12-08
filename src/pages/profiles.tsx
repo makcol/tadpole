@@ -2,7 +2,12 @@ import useSWR, { mutate } from "swr";
 import { useEffect, useRef, useState } from "react";
 import { useLockFn } from "ahooks";
 import { Box, IconButton } from "@mui/material";
-import { InputOutlined, LocalFireDepartmentRounded, RefreshRounded, TextSnippetOutlined } from "@mui/icons-material";
+import {
+  InputOutlined,
+  LocalFireDepartmentRounded,
+  RefreshRounded,
+  TextSnippetOutlined,
+} from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import {
   deleteProfile,
@@ -14,7 +19,7 @@ import {
   getProfiles,
   getRuntimeLogs,
   openWebUrl,
-  refreshUserInfo
+  refreshUserInfo,
 } from "@/services/cmds";
 
 import { BasePage, DialogRef, Notice } from "@/components/base";
@@ -41,7 +46,7 @@ const ProfilePage = () => {
     profiles = {},
     activateSelected,
     patchProfiles,
-    mutateProfiles
+    mutateProfiles,
   } = useProfiles();
 
   const { data: chainLogs = {}, mutate: mutateLogs } = useSWR(
@@ -50,22 +55,17 @@ const ProfilePage = () => {
   );
 
   const configRef = useRef<DialogRef>(null);
-  const {
-    enable_system_proxy
-  } = verge ?? {};
-
+  const { enable_system_proxy } = verge ?? {};
 
   useEffect(() => {
     if (LSUtil.isNeedUpdate()) {
-      onUpdateFree().then(r => {
-      });
+      onUpdateFree().then((r) => {});
     }
     setConnected(enable_system_proxy || false);
   }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-
       const tryTime = LSUtil.getTryTime();
       if (tryTime > Date.now()) {
         if (LSUtil.isVIP()) {
@@ -76,7 +76,6 @@ const ProfilePage = () => {
         setRestTime("未开始试用");
         disableSystemProxy();
       }
-
     }, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -104,7 +103,7 @@ const ProfilePage = () => {
     }
     try {
       const response = await axios.get(baseUrl + "/sys/user/sysInfo", {
-        headers: { token: LSUtil.getToken() }
+        headers: { token: LSUtil.getToken() },
       });
       return response.data; // 返回登录成功后的用户数据
     } catch (error) {
@@ -112,7 +111,6 @@ const ProfilePage = () => {
       throw new Error(error.response.data); // 抛出登录失败的错误信息
     }
   }
-
 
   const onUpdateFree = useLockFn(async () => {
     Notice.info("正在获取最新节点，请耐心等待", 5000);
@@ -123,11 +121,11 @@ const ProfilePage = () => {
           localStorage.setItem("userName", result.data.userInfo.userName);
           localStorage.setItem("vip", result.data.userInfo.vip);
 
-          await refreshUserInfo();
-
           try {
-            await deleteProfile("MicrosoftExtensions");
+            Notice.info("删除节点");
 
+            await deleteProfile("CACHEDIR");
+            Notice.info("获取节点");
             await getConfigText(result.data.userInfo.vip);
             Notice.success("节点更新成功！");
 
@@ -147,15 +145,12 @@ const ProfilePage = () => {
           } catch (err: any) {
             Notice.error(err.message || err.toString());
           } finally {
-
           }
         } else {
           localStorage.removeItem("token");
 
-          await refreshUserInfo();
-
           try {
-            await deleteProfile("MicrosoftExtensions");
+            await deleteProfile("CACHEDIR");
 
             await getConfigText(false);
             Notice.success("节点更新成功！");
@@ -176,16 +171,12 @@ const ProfilePage = () => {
           } catch (err: any) {
             Notice.error(err.message || err.toString());
           } finally {
-
           }
         }
       })
       .catch(async () => {
-
-        await refreshUserInfo();
-
         try {
-          await deleteProfile("MicrosoftExtensions");
+          await deleteProfile("CACHEDIR");
 
           await getConfigText(false);
           Notice.success("节点更新成功！");
@@ -206,14 +197,12 @@ const ProfilePage = () => {
         } catch (err: any) {
           Notice.error(err.message || err.toString());
         } finally {
-
         }
       });
   });
 
   return (
     <BasePage
-
       header={
         <Box sx={{ mt: 1, display: "flex", alignItems: "center", gap: 1 }}>
           <IconButton
@@ -236,40 +225,77 @@ const ProfilePage = () => {
         </Box>
       }
     >
+      <img style={{ width: "100%", height: "45%" }} src={worldImage} alt="" />
 
-      <img style={{ width: "100%", height: "45%" }} src={worldImage}  alt=""/>
-
-      <div style={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 100,
-        marginTop: 20
-      }}>
-
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 100,
+          marginTop: 20,
+        }}
+      >
         {connected && (
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-            <ConnectOn style={{ height: 150, width: 150 }}
-                       onClick={() => disableSystemProxy().then(r => setConnected(false))} />
-            <p>已连接</p>
-          </div>)}
-        {!connected && (
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-            <ConnectOff style={{ height: 150, width: 150 }} onClick={() => {
-              if (LSUtil.getTryTime() - Date.now() <= 0) {
-                Notice.error("请先开始试用");
-              } else {
-                enableSystemProxy().then(r => setConnected(true));
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ConnectOn
+              style={{ height: 150, width: 150 }}
+              onClick={() =>
+                disableSystemProxy().then((r) => setConnected(false))
               }
-            }} />
+            />
+            <p>已连接</p>
+          </div>
+        )}
+        {!connected && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ConnectOff
+              style={{ height: 150, width: 150 }}
+              onClick={() => {
+                if (LSUtil.getTryTime() - Date.now() <= 0) {
+                  Notice.error("请先开始试用");
+                } else {
+                  enableSystemProxy().then((r) => setConnected(true));
+                }
+              }}
+            />
             <p>点击连接</p>
-          </div>)}
+          </div>
+        )}
 
-        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <p>试用到期时间</p>
           <p style={{ fontSize: 25, color: "#434343" }}>{restTime}</p>
-          <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <p>点击查看并输入免费试用激活码</p>
             <IconButton
               size="small"
@@ -283,7 +309,6 @@ const ProfilePage = () => {
             </IconButton>
           </div>
         </div>
-
       </div>
       <CodeViewer ref={codeRef} />
     </BasePage>

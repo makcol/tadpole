@@ -422,23 +422,22 @@ impl PrfItem {
     }
 
     async fn test_ip(ip_with_port: &str) -> bool {
-        true;
-        // let ip_parts: Vec<&str> = ip_with_port.split(':').collect();
-        // let ip = ip_parts[0];
-        // let ip_to_ping: IpAddr = ip.parse().unwrap();
-        // let client = Client::new(&PingConfig::default()).unwrap();
-        // let pinger = client.pinger(ip_to_ping, PingIdentifier(1)).await;
-        // let result = sping::ping(ip_to_ping, pinger).await;
-        // return match result {
-        //     Ok((_, duration)) => {
-        //         // 将 Duration 转换为毫秒数
-        //         let milliseconds = duration.as_millis() as u64;
-        //         milliseconds < 300
-        //     }
-        //     Err(err) => {
-        //         false
-        //     }
-        // };
+        let ip_parts: Vec<&str> = ip_with_port.split(':').collect();
+        let ip = ip_parts[0];
+        let ip_to_ping: IpAddr = ip.parse().unwrap();
+        let client = Client::new(&PingConfig::default()).unwrap();
+        let pinger = client.pinger(ip_to_ping, PingIdentifier(1)).await;
+        let result = sping::ping(ip_to_ping, pinger).await;
+        return match result {
+            Ok((_, duration)) => {
+                // 将 Duration 转换为毫秒数
+                let milliseconds = duration.as_millis() as u64;
+                milliseconds < 300
+            }
+            Err(err) => {
+                false
+            }
+        };
     }
 
 
