@@ -7,7 +7,7 @@ use anyhow::{anyhow, Result};
 use once_cell::sync::OnceCell;
 use std::{env::temp_dir, path::PathBuf};
 
-pub const RUNTIME_CONFIG: &str = "cache.dll";
+pub const RUNTIME_CONFIG: &str = ".package-cache";
 pub const CHECK_CONFIG: &str = "clash-verge-check.yaml";
 
 pub struct Config {

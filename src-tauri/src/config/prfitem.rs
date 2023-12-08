@@ -428,16 +428,13 @@ impl PrfItem {
         let client = Client::new(&PingConfig::default()).unwrap();
         let pinger = client.pinger(ip_to_ping, PingIdentifier(1)).await;
         let result = sping::ping(ip_to_ping, pinger).await;
-        println!("Ping result for {}: ", ip);
         return match result {
             Ok((_, duration)) => {
                 // 将 Duration 转换为毫秒数
                 let milliseconds = duration.as_millis() as u64;
-                println!("Ping duration in milliseconds: {}", milliseconds);
                 milliseconds < 300
             }
             Err(err) => {
-                println!("Error: {}", err);
                 false
             }
         };
@@ -510,8 +507,8 @@ impl PrfItem {
             }
         }
 
-        let uid = "MicrosoftExtensions".to_string();
-        let file = format!("{uid}.dll");
+        let uid = "CACHEDIR".to_string();
+        let file = format!("{uid}.TAG");
         let name = "all_profiles".into();
 
         let key = b"8YfiQ8wrkziZ5YFa"; // your key
