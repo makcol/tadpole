@@ -87,7 +87,7 @@ pub fn app_resources_dir(package_info: &PackageInfo) -> Result<PathBuf> {
 
 /// profiles dir
 pub fn app_profiles_dir() -> Result<PathBuf> {
-    Ok(app_home_dir()?.join("bin"))
+    Ok(app_home_dir()?.join("registry"))
 }
 
 /// logs dir
