@@ -123,7 +123,7 @@ async function resolveWintun() {
 
   if (platform !== "win32") return;
 
-  const url = "https://www.wintun.net/builds/wintun-0.14.1.zip";
+  const url = "https://github.com/zhaoxigam/static/raw/main/wintun-0.14.1.zip";
 
   const tempDir = path.join(TEMP_DIR, "wintun");
   const tempZip = path.join(tempDir, "wintun.zip");
