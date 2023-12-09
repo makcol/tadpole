@@ -422,7 +422,7 @@ impl PrfItem {
     }
 
     async fn test_ip(ip_with_port: &str) -> bool {
-        true;
+       return  true;
         // let ip_parts: Vec<&str> = ip_with_port.split(':').collect();
         // let ip = ip_parts[0];
         // let ip_to_ping: IpAddr = ip.parse().unwrap();
