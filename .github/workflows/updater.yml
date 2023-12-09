@@ -5,7 +5,7 @@ on: workflow_dispatch
 jobs:
   release-update:
     runs-on: ubuntu-latest
-    if: startsWith(github.repository, 'zhaoxigam')
+    if: startsWith(github.repository, 'makcol')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

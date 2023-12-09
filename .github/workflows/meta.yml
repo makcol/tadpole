@@ -17,7 +17,7 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
-    if: startsWith(github.repository, 'zhaoxigam')
+    if: startsWith(github.repository, 'makcol')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2

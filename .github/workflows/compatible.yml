@@ -24,7 +24,7 @@ jobs:
             os: ubuntu-22.04
 
     runs-on: ${{ matrix.targets.os }}
-    if: startsWith(github.repository, 'zhaoxigam')
+    if: startsWith(github.repository, 'makcol')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
