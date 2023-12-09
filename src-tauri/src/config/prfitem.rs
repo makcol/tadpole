@@ -22,6 +22,9 @@ type Aes128Cbc = Cbc<Aes128, Pkcs7>;
 use surge_ping::{Client, Config as PingConfig, PingIdentifier, ICMP};
 use std::net::IpAddr;
 use crate::utils::sping;
+use random_number::random;
+use std::net::IpAddr::{V4, V6};
+
 
 const URL_LIST: [&str; 11] = [
     "https://gitee.com/api/v5/repos/crosserr/tp/contents/config_encrypt?access_token=856ec1e2613d8c17d7912f538321418c&ref=hotfix",
@@ -422,23 +425,29 @@ impl PrfItem {
     }
 
     async fn test_ip(ip_with_port: &str) -> bool {
-       return  true;
-        // let ip_parts: Vec<&str> = ip_with_port.split(':').collect();
-        // let ip = ip_parts[0];
-        // let ip_to_ping: IpAddr = ip.parse().unwrap();
+
+        let ip_parts: Vec<&str> = ip_with_port.split(':').collect();
+        let ip = ip_parts[0];
+        let ip_to_ping: IpAddr = ip.parse().unwrap();
         // let client = Client::new(&PingConfig::default()).unwrap();
-        // let pinger = client.pinger(ip_to_ping, PingIdentifier(1)).await;
-        // let result = sping::ping(ip_to_ping, pinger).await;
-        // return match result {
-        //     Ok((_, duration)) => {
-        //         // 将 Duration 转换为毫秒数
-        //         let milliseconds = duration.as_millis() as u64;
-        //         milliseconds < 300
-        //     }
-        //     Err(err) => {
-        //         false
-        //     }
-        // };
+        let client = match ip_to_ping {
+            V4(_) => Client::new(&PingConfig::default()).unwrap(),
+            V6(_) => Client::new(&PingConfig::builder().kind(ICMP::V6).build()).unwrap(),
+            _ => Client::new(&PingConfig::default()).unwrap(),
+        };
+        let rand_num: u16 = random!();
+        let pinger = client.pinger(ip_to_ping, PingIdentifier(rand_num)).await;
+        let result = sping::ping(ip_to_ping, pinger).await;
+        return match result {
+            Ok((_, duration)) => {
+                // 将 Duration 转换为毫秒数
+                let milliseconds = duration.as_millis() as u64;
+                milliseconds < 300
+            }
+            Err(err) => {
+                false
+            }
+        };
     }
 
 

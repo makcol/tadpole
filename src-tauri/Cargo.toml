@@ -14,6 +14,7 @@ tauri-build = { version = "1", features = [] }
 
 [dependencies]
 surge-ping="0.7.0"
+random-number="0.1.7"
 rand = "0.8"
 warp = "0.3"
 which = "4.2.2"
