@@ -205,6 +205,7 @@ const ProfilePage = () => {
     <BasePage
       header={
         <Box sx={{ mt: 1, display: "flex", alignItems: "center", gap: 1 }}>
+          <p>{t("Update All Profiles")}</p>
           <IconButton
             size="small"
             color="inherit"
@@ -225,7 +226,11 @@ const ProfilePage = () => {
         </Box>
       }
     >
-      <img style={{ width: "100%", height: "45%" }} src={worldImage} alt="" />
+      <img
+        style={{ width: "100%", height: "45%", minHeight: 200 }}
+        src={worldImage}
+        alt=""
+      />
 
       <div
         style={{

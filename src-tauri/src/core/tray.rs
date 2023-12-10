@@ -26,7 +26,7 @@ impl Tray {
         SystemTrayMenu::new()
             .add_item(CustomMenuItem::new(
                 "open_window",
-                t!("Dashboard", "首页"),
+                t!("Dashboard", "打开"),
             ))
             .add_native_item(SystemTrayMenuItem::Separator)
             .add_item(CustomMenuItem::new(
