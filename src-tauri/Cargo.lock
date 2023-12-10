@@ -531,15 +531,16 @@ dependencies = [
  "once_cell",
  "open 4.1.0",
  "parking_lot",
- "ping",
  "port_scanner",
  "rand 0.8.5",
+ "random-number",
  "reqwest",
  "rquickjs",
  "runas",
  "serde",
  "serde_json",
  "serde_yaml 0.9.21",
+ "surge-ping",
  "sysinfo",
  "sysproxy",
  "tauri",
@@ -2447,6 +2448,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "no-std-net"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "43794a0ace135be66a25d3ae77d41b91615fb68ae937f904090203e81f755b65"
+
+[[package]]
 name = "nodrop"
 version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2989,17 +2996,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"
 
 [[package]]
-name = "ping"
-version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "500fabcec9333c21e32bbc3c98dc0eb54fa59eadfc34d1d2e2d7db71547be4b4"
-dependencies = [
- "rand 0.8.5",
- "socket2",
- "thiserror",
-]
-
-[[package]]
 name = "pkg-config"
 version = "0.3.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3017,6 +3013,48 @@ dependencies = [
  "quick-xml",
  "serde",
  "time 0.3.15",
+]
+
+[[package]]
+name = "pnet_base"
+version = "0.31.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f9d3a993d49e5fd5d4d854d6999d4addca1f72d86c65adf224a36757161c02b6"
+dependencies = [
+ "no-std-net",
+]
+
+[[package]]
+name = "pnet_macros"
+version = "0.31.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "48dd52a5211fac27e7acb14cfc9f30ae16ae0e956b7b779c8214c74559cef4c3"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "regex 1.8.3",
+ "syn 1.0.109",
+]
+
+[[package]]
+name = "pnet_macros_support"
+version = "0.31.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "89de095dc7739349559913aed1ef6a11e73ceade4897dadc77c5e09de6740750"
+dependencies = [
+ "pnet_base",
+]
+
+[[package]]
+name = "pnet_packet"
+version = "0.31.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bc3b5111e697c39c8b9795b9fdccbc301ab696699e88b9ea5a4e4628978f495f"
+dependencies = [
+ "glob",
+ "pnet_base",
+ "pnet_macros",
+ "pnet_macros_support",
 ]
 
 [[package]]
@@ -3218,6 +3256,28 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "16abd0c1b639e9eb4d7c50c0b8100b0d0f849be2349829c740fe8e6eb4816429"
 dependencies = [
  "rand_core 0.5.1",
+]
+
+[[package]]
+name = "random-number"
+version = "0.1.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3a3da5cbb4c27c5150c03a54a7e4745437cd90f9e329ae657c0b889a144bb7be"
+dependencies = [
+ "proc-macro-hack",
+ "rand 0.8.5",
+ "random-number-macro-impl",
+]
+
+[[package]]
+name = "random-number-macro-impl"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8b86292cf41ccfc96c5de7165c1c53d5b4ac540c5bab9d1857acbe9eba5f1a0b"
+dependencies = [
+ "proc-macro-hack",
+ "quote",
+ "syn 2.0.18",
 ]
 
 [[package]]
@@ -4065,6 +4125,22 @@ name = "strsim"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
+
+[[package]]
+name = "surge-ping"
+version = "0.7.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7d1d85515268a4d0c8dd43f79fae4001d0f47cdce006482b7917af4e3b9fcd79"
+dependencies = [
+ "hex",
+ "parking_lot",
+ "pnet_packet",
+ "rand 0.8.5",
+ "socket2",
+ "thiserror",
+ "tokio",
+ "tracing",
+]
 
 [[package]]
 name = "syn"

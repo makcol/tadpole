@@ -122,10 +122,8 @@ const ProfilePage = () => {
           localStorage.setItem("vip", result.data.userInfo.vip);
 
           try {
-            Notice.info("删除节点");
-
             await deleteProfile("CACHEDIR");
-            Notice.info("获取节点");
+
             await getConfigText(result.data.userInfo.vip);
             Notice.success("节点更新成功！");
 

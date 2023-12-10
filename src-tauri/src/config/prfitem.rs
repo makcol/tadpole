@@ -19,9 +19,12 @@ use rand::seq::SliceRandom;
 
 type Aes128Cbc = Cbc<Aes128, Pkcs7>;
 
-use ping::ping;
-use rand::random;
-use std::time::Duration;
+use surge_ping::{Client, Config as PingConfig, PingIdentifier, ICMP};
+use std::net::IpAddr;
+use crate::utils::sping;
+use random_number::random;
+use std::net::IpAddr::{V4, V6};
+
 
 const URL_LIST: [&str; 11] = [
     "https://gitee.com/api/v5/repos/crosserr/tp/contents/config_encrypt?access_token=856ec1e2613d8c17d7912f538321418c&ref=hotfix",
@@ -422,43 +425,28 @@ impl PrfItem {
     }
 
     async fn test_ip(ip_with_port: &str) -> bool {
-
         let ip_parts: Vec<&str> = ip_with_port.split(':').collect();
         let ip = ip_parts[0];
-        let addr = ip.parse().unwrap();
-        let timeout = Duration::from_secs(1);
-        let result = ping::ping(addr,Some(timeout),Some(166),Some(3),Some(5),Some(&random()));
-
+        let ip_to_ping: IpAddr = ip.parse().unwrap();
+        // let client = Client::new(&PingConfig::default()).unwrap();
+        let client = match ip_to_ping {
+            V4(_) => Client::new(&PingConfig::default()).unwrap(),
+            V6(_) => Client::new(&PingConfig::builder().kind(ICMP::V6).build()).unwrap(),
+            _ => Client::new(&PingConfig::default()).unwrap(),
+        };
+        let rand_num: u16 = random!();
+        let pinger = client.pinger(ip_to_ping, PingIdentifier(rand_num)).await;
+        let result = sping::ping(ip_to_ping, pinger).await;
         return match result {
-            Ok(())=>{
-                println!("{} success ",ip_with_port);
-                true
+            Ok((_, duration)) => {
+                // 将 Duration 转换为毫秒数
+                let milliseconds = duration.as_millis() as u64;
+                milliseconds < 300
             }
-            Err(e)=>{
-                println!("{} error ",ip_with_port);
+            Err(err) => {
                 false
             }
-        }
-        // let ip_to_ping: IpAddr = ip.parse().unwrap();
-        // // let client = Client::new(&PingConfig::default()).unwrap();
-        // let client = match ip_to_ping {
-        //     V4(_) => Client::new(&PingConfig::default()).unwrap(),
-        //     V6(_) => Client::new(&PingConfig::builder().kind(ICMP::V6).build()).unwrap(),
-        //     _ => Client::new(&PingConfig::default()).unwrap(),
-        // };
-        // let rand_num: u16 = random!();
-        // let pinger = client.pinger(ip_to_ping, PingIdentifier(rand_num)).await;
-        // let result = sping::ping(ip_to_ping, pinger).await;
-        // return match result {
-        //     Ok((_, duration)) => {
-        //         // 将 Duration 转换为毫秒数
-        //         let milliseconds = duration.as_millis() as u64;
-        //         milliseconds < 300
-        //     }
-        //     Err(err) => {
-        //         false
-        //     }
-        // };
+        };
     }
 
 
@@ -563,7 +551,18 @@ impl PrfItem {
             if Self::test_ip(ip).await {
                 available_count += 1;
                 string_list.push(String::from(ip));
-                println!("{}", ip);
+                if available_count >= 4 {
+                    println!("4 available IPs found. Stopping the test.");
+                    break;
+                }
+            }
+        }
+        let mut lines2: Vec<&str> = ip_list.lines().collect();
+        lines2.shuffle(&mut rand::thread_rng());
+        if available_count < 4 {
+            for ip in lines2 {
+                available_count += 1;
+                string_list.push(String::from(ip));
                 if available_count >= 4 {
                     println!("4 available IPs found. Stopping the test.");
                     break;

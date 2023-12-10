@@ -4,4 +4,5 @@ pub mod init;
 pub mod resolve;
 pub mod server;
 pub mod tmpl;
+pub mod sping;
 // mod winhelp;

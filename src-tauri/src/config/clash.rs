@@ -37,7 +37,7 @@ impl IClashTemp {
         map.insert(
             "external-controller".into(),
             match cfg!(feature = "default-meta") {
-                false => "127.0.0.1:9090".into(),
+                false => "127.0.0.1:9097".into(),
                 true => "127.0.0.1:9098".into(),
             },
         );
@@ -121,7 +121,7 @@ impl IClashTemp {
                 }
                 None => None,
             })
-            .unwrap_or("127.0.0.1:9090".into())
+            .unwrap_or("127.0.0.1:9097".into())
     }
 
     pub fn guard_client_ctrl(config: &Mapping) -> String {
@@ -133,7 +133,7 @@ impl IClashTemp {
                 }
                 socket.to_string()
             }
-            Err(_) => "127.0.0.1:9090".into(),
+            Err(_) => "127.0.0.1:9097".into(),
         }
     }
 }
@@ -168,12 +168,12 @@ fn test_clash_info() {
 
     assert_eq!(
         IClashTemp(IClashTemp::guard(Mapping::new())).get_client_info(),
-        get_result(7860, "127.0.0.1:9090")
+        get_result(7860, "127.0.0.1:9097")
     );
 
-    assert_eq!(get_case("", ""), get_result(7860, "127.0.0.1:9090"));
+    assert_eq!(get_case("", ""), get_result(7860, "127.0.0.1:9097"));
 
-    assert_eq!(get_case(65537, ""), get_result(1, "127.0.0.1:9090"));
+    assert_eq!(get_case(65537, ""), get_result(1, "127.0.0.1:9097"));
 
     assert_eq!(
         get_case(8888, "127.0.0.1:8888"),
@@ -182,7 +182,7 @@ fn test_clash_info() {
 
     assert_eq!(
         get_case(8888, "   :98888 "),
-        get_result(8888, "127.0.0.1:9090")
+        get_result(8888, "127.0.0.1:9097")
     );
 
     assert_eq!(
@@ -207,7 +207,7 @@ fn test_clash_info() {
 
     assert_eq!(
         get_case(8888, "192.168.1.1:80800"),
-        get_result(8888, "127.0.0.1:9090")
+        get_result(8888, "127.0.0.1:9097")
     );
 }
 
