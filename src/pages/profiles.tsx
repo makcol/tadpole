@@ -113,7 +113,12 @@ const ProfilePage = () => {
   }
 
   const onUpdateFree = useLockFn(async () => {
-    Notice.info("正在获取最新节点，请耐心等待", 5000);
+    if (!LSUtil.isVIP() && !LSUtil.isNeedUpdate()) {
+      Notice.error("非VIP用户每天仅可随机更新一次线路IP");
+      return;
+    }
+
+    Notice.info("正在获取最新节点，请耐心等待", 3000);
     getInfo()
       .then(async (result) => {
         if (result.code == 0) {
@@ -126,7 +131,6 @@ const ProfilePage = () => {
 
             await getConfigText(result.data.userInfo.vip);
             Notice.success("节点更新成功！");
-
             getProfiles().then((newProfiles) => {
               mutate("getProfiles", newProfiles);
 
@@ -137,6 +141,7 @@ const ProfilePage = () => {
                 const current = remoteItem.uid;
                 patchProfiles({ current });
                 mutateLogs();
+                LSUtil.setNeedUpdate();
                 setTimeout(() => activateSelected(), 2000);
               }
             });
@@ -163,6 +168,7 @@ const ProfilePage = () => {
                 const current = remoteItem.uid;
                 patchProfiles({ current });
                 mutateLogs();
+                LSUtil.setNeedUpdate();
                 setTimeout(() => activateSelected(), 2000);
               }
             });
@@ -189,6 +195,7 @@ const ProfilePage = () => {
               const current = remoteItem.uid;
               patchProfiles({ current });
               mutateLogs();
+              LSUtil.setNeedUpdate();
               setTimeout(() => activateSelected(), 2000);
             }
           });

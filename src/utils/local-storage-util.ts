@@ -1,7 +1,6 @@
 import { Notice } from "@/components/base";
 
 class LSUtil {
-
   static setToken(token: string) {
     localStorage.setItem("token", token);
   }
@@ -11,7 +10,6 @@ class LSUtil {
   }
 
   static isNeedUpdate(): boolean | null {
-
     const today: Date = new Date();
     const year: number = today.getFullYear();
     const month: number = today.getMonth() + 1; // 月份是从 0 开始的，所以要加 1
@@ -22,13 +20,21 @@ class LSUtil {
 
     const formattedDate: string = `${year}-${formattedMonth}-${formattedDay}`;
 
-    if (localStorage.getItem("updateTime") == formattedDate) {
-      return false;
-    } else {
-      localStorage.setItem("updateTime", formattedDate);
-      return true;
-    }
+    return localStorage.getItem("updateTime") != formattedDate;
+  }
 
+  static setNeedUpdate() {
+    const today: Date = new Date();
+    const year: number = today.getFullYear();
+    const month: number = today.getMonth() + 1; // 月份是从 0 开始的，所以要加 1
+    const day: number = today.getDate();
+
+    const formattedMonth: string = month < 10 ? `0${month}` : `${month}`;
+    const formattedDay: string = day < 10 ? `0${day}` : `${day}`;
+
+    const formattedDate: string = `${year}-${formattedMonth}-${formattedDay}`;
+
+    localStorage.setItem("updateTime", formattedDate);
   }
 
   static setExpiredTime(expiredTime: string) {
@@ -68,7 +74,10 @@ class LSUtil {
     if (tryTime > Date.now()) {
       Notice.error("您已经开始试用，请在本次试用到期后再来试试");
     } else {
-      localStorage.setItem("tryTime", JSON.stringify(Date.now() + 60 * 60 * 1000));
+      localStorage.setItem(
+        "tryTime",
+        JSON.stringify(Date.now() + 60 * 60 * 1000)
+      );
     }
   }
 
