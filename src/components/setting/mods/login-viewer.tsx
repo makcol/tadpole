@@ -2,7 +2,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
   useState,
-  useEffect
+  useEffect,
 } from "react";
 import { useTranslation } from "react-i18next";
 import { BaseDialog, DialogRef, Notice } from "@/components/base";
@@ -10,7 +10,6 @@ import { getBaseUrl, openWebUrl, refreshUserInfo } from "@/services/cmds";
 import axios from "axios";
 import LSUtil from "@/utils/local-storage-util";
 import { getData, postData } from "@/utils/net-util";
-
 
 export const LoginViewer = forwardRef<DialogRef>((props, ref) => {
   const { t } = useTranslation();
@@ -31,9 +30,9 @@ export const LoginViewer = forwardRef<DialogRef>((props, ref) => {
         setUsername(username);
       }
       setOpen(true);
-      Notice.info("如登陆后没有反应，可以尝试关闭VPN或稍后重试",3000);
+      Notice.info("如登陆后没有反应，可以尝试关闭VPN或稍后重试", 3000);
     },
-    close: () => setOpen(false)
+    close: () => setOpen(false),
   }));
 
   useEffect(() => {
@@ -58,13 +57,12 @@ export const LoginViewer = forwardRef<DialogRef>((props, ref) => {
         Notice.info("正在登陆，请稍后");
         login(username, password, code)
           .then((result) => {
-
             if (result.msg !== "Bad credentials") {
               if (result.code == 0) {
                 // 清空输入框
                 setUsername("");
                 setPassword("");
-                LSUtil.setToken(  result.token);
+                LSUtil.setToken(result.token);
                 setOpen(false);
                 getInfo()
                   .then(async (result) => {
@@ -87,8 +85,7 @@ export const LoginViewer = forwardRef<DialogRef>((props, ref) => {
               Notice.error("用户名或密码错误");
             }
           })
-          .catch(() => {
-          });
+          .catch(() => {});
       } else {
         Notice.error("请输入密码");
       }
@@ -126,8 +123,8 @@ export const LoginViewer = forwardRef<DialogRef>((props, ref) => {
       try {
         const response = await postData(
           baseUrl +
-          "/verification/mail/sendCodeByUserName?username=" +
-          username,
+            "/verification/mail/sendCodeByUserName?username=" +
+            username,
           {}
         );
         if (response.data.code === 0) {
@@ -147,7 +144,15 @@ export const LoginViewer = forwardRef<DialogRef>((props, ref) => {
   };
 
   const register = async () => {
-    openWebUrl("https://tadpole.v2cross.com");
+    let baseUrl = LSUtil.getBaseUrl();
+    if (baseUrl == null) {
+      baseUrl = await getBaseUrl();
+      if (baseUrl == null) {
+        baseUrl = "https://vip.foxovpn.com";
+      }
+      LSUtil.setBaseUrl(baseUrl);
+    }
+    openWebUrl(baseUrl + "/account.html");
   };
 
   const openForum = async () => {
@@ -173,13 +178,13 @@ export const LoginViewer = forwardRef<DialogRef>((props, ref) => {
         baseUrl + "/token/login",
         {
           username,
-          password
+          password,
         },
         {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
-            vcode: vcode
-          }
+            vcode: vcode,
+          },
         }
       );
       return response.data; // 返回登录成功后的用户数据
@@ -200,7 +205,6 @@ export const LoginViewer = forwardRef<DialogRef>((props, ref) => {
       onClose={() => setOpen(false)}
     >
       <div className="login-container">
-
         <form className="login-form">
           <input
             type="text"
@@ -227,7 +231,7 @@ export const LoginViewer = forwardRef<DialogRef>((props, ref) => {
               disabled={disableSend}
               style={{
                 marginLeft: 12,
-                backgroundColor: disableSend ? "#999999" : "#5b5c9d"
+                backgroundColor: disableSend ? "#999999" : "#5b5c9d",
               }}
             >
               发送验证码
@@ -236,7 +240,7 @@ export const LoginViewer = forwardRef<DialogRef>((props, ref) => {
             <p
               style={{
                 fontSize: 12,
-                marginBottom: -5
+                marginBottom: -5,
               }}
             >
               {disableSend
@@ -245,10 +249,7 @@ export const LoginViewer = forwardRef<DialogRef>((props, ref) => {
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={handleLogin}
-          >
+          <button type="button" onClick={handleLogin}>
             登陆
           </button>
         </form>
@@ -258,11 +259,11 @@ export const LoginViewer = forwardRef<DialogRef>((props, ref) => {
           style={{
             backgroundColor: "#00000000",
             color: "#5b5c9d",
-            marginTop: 10
+            marginTop: 10,
           }}
           onClick={register}
         >
-          请使用Tadpole（蝌蚪）VPN Android 版注册账号
+          注册账号
         </button>
 
         <a style={{ fontSize: 12, marginTop: 20, color: "gray" }}>
